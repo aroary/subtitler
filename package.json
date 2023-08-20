@@ -1,0 +1,11 @@
+{
+  "name": "subtitler",
+  "version": "1.0.0",
+  "description": "Automatically add subtitles to your vidios using AI speech to text",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "Shalomkohn, aroary",
+  "license": "ISC"
+}
