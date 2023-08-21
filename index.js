@@ -71,7 +71,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                             .on('end', () => {
                                 // Send results
                                 console.log("Sending generated file");
-                                res.setHeader("Content-Disposition", "attachment").status(200).send(fs.readFileSync("./tested.mp4"));
+                                res.setHeader("Content-Disposition", "attachment;filename=test.mp4").status(200).send(fs.readFileSync("./tested.mp4"));
                             })
                             .run();
                     })
