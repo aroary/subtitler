@@ -29,6 +29,7 @@ const upload = multer({
 
 const app = express();
 
+app.use("/public", express.static(path.join(__dirname, './public')));
 app.use('/', express.static(path.join(__dirname, './view')));
 
 app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res) => {
@@ -70,8 +71,32 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                             })
                             .on('end', () => {
                                 // Send results
-                                console.log("Sending generated file");
-                                res.setHeader("Content-Disposition", "attachment;filename=test.mp4").status(200).send(fs.readFileSync("./tested.mp4"));
+
+                                const videoPath = path.join('./tested.mp4');
+                                const videoData = fs.readFileSync(videoPath);
+                                const base64Video = videoData.toString('base64');
+                                const dataUrl = "data:video/mp4;base64," + base64Video;
+
+
+                                // res.sendFile(__dirname + '/view/complete.html')
+
+                                const htmlFilePath = path.join(__dirname, './view/complete.html');
+
+                                fs.readFile(htmlFilePath, 'utf8', (err, htmlContent) => {
+                                    if (err) {
+                                        console.error('Error reading HTML file:', err);
+                                        return res.status(500).send('Internal Server Error');
+                                    }
+
+                                    const modifiedHtml = htmlContent.replace('{{dataUrlPlaceholder}}', dataUrl);
+
+                                    res.send(modifiedHtml);
+                                });
+
+                                // res.send('hi')
+
+                                // console.log("Sending generated file");
+                                // res.setHeader("Content-Disposition", "attachment;filename=test.mp4").status(200).send(fs.readFileSync("./tested.mp4"));
                             })
                             .run();
                     })

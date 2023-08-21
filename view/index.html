@@ -1,16 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
-        <title>Subtitler</title>
+        <link rel="stylesheet" href="../public/style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <form method="post" action="./subtitle" enctype="multipart/form-data">
-            <input type="hidden" name="token">
-            <input id="file" type="file" name="video" accept="video/mp4">
-            <button type="reset">Reset</button>
-            <button type="submit">Submit</button>
-        </form>
-    </body>
+        <meta name="description" content="Auto-generate subtitles and burn them to your video. Fast, free, no email required. SubtitleRush lets you add subtitles to videos easily.">
+        <meta name="keywords" content="subtitles, video, automatic subtitles, burn subtitles, subtitle generator">
+        <meta name="author" content="Kuma Web Creations">
+        <meta name="robots" content="index, follow">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>SubtitleRush - Auto-Generate Subtitles for Videos</title>
+      </head>
+
+      <body>
+        <div class="container">
+          <h1>Welcome to <span>SubtitleRush</span></h1>
+          <h2>Auto-Generate subtitles and burn them to your video, fast, free, no Email required</h2>
+          <div class="loading-container" data-status="form" id="loadingContainer">
+            <img class="spinner" src="../public/spinner.svg" alt="Loading...">
+            <p>Adding subtitles to your video...</p>
+          </div>
+          <form action="./subtitle" method="POST" enctype="multipart/form-data" data-status="form" id="form">
+            <input id="session" name="token" type="hidden">
+            <div class="input-boxes-container">
+              <label for="inputVideo" class="drop-area" id="videoDropArea">
+                <input id="inputVideo" name="video" type="file" accept="video/*" required hidden/>
+                <div class="imgView">
+                  <img id="preUploadedImg" src="../public/video-pre-upload.png" alt="Upload">
+                  <video id="uploadedImg" class="video-upload-thumbnail">
+                    Your browser does not support the video tag.
+                  </video>
+                  <p class="input-text" id="inputText">Drop file or click to select file</p>
+                </div>
+              </label>
+            </div>
+            <button type="submit" class="submit-btn" id="submitBtn">Start Processing</button>
+          </form>
+        </div>
+        <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="../public/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
+    
+       <!-- Compiled and minified JavaScript -->
+        <script
+          src="https://code.jquery.com/jquery-3.6.3.min.js"
+          integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+          crossorigin="anonymous"
+        ></script>
+        <script src="./public/token.js"></script>
+        <script>
+          session.value = getCookie("token");
+    
+    
+          // drop uploading 
+          let dropArea = document.querySelector('.drop-area')
+          let imgView = document.querySelector('.imgView')
+          let inputText = document.querySelector('.input-text')
+
+          let statusElements = [form, loadingContainer]
+    
+          form.addEventListener("submit", () => {
+            statusElements.forEach(element => {
+              element.dataset.status = 'loading'
+            })
+          })
+    
+          function isFileAdded() {
+            return dropArea.classList.contains('droped')
+          }
+    
+        inputVideo.addEventListener('change', (event) => {
+            if (event.target.files.length > 0) {
+                fileAdded(event.target.files[0])
+            }
+        })
+    
+          function fileAdded(file) {
+            let blobURL = URL.createObjectURL(file);    
+            uploadedImg.src = blobURL
+            uploadedImg.classList.add('show')
+            preUploadedImg.classList.add('hide')
+            inputText.classList.add('video-selected')
+            inputText.textContent = inputVideo.files[0].name
+            dropArea.classList.add('droped')
+            if (isFileAdded()) {
+              submitBtn.classList.add('working')
+            } else {
+              submitBtn.classList.remove('working')
+            }
+          }
+    
+    
+          dropArea.addEventListener('dragover', e => {
+            e.preventDefault()
+            dropArea.classList.add('drag-over')
+          })
+    
+          dropArea.addEventListener('dragleave', e => {
+            dropArea.classList.remove('drag-over')
+          })
+    
+          dropArea.addEventListener('drop', e => {
+            e.preventDefault()
+            if (e.dataTransfer.files[0].type.startsWith('video/mp4')) {
+              inputVideo.files = e.dataTransfer.files
+            } else {
+              dropArea.classList.remove('drag-over')
+              alert('Video must be mp4 format')
+              return
+            }
+            fileAdded(e.dataTransfer.files[0])
+          })
+    
+        </script>
+      </body>
 </html>
