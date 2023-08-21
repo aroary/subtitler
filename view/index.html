@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
         <link rel="stylesheet" href="../public/style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,9 +13,8 @@
         <meta name="robots" content="index, follow">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>SubtitleRush - Auto-Generate Subtitles for Videos</title>
-      </head>
-
-      <body>
+    </head>
+    <body>
         <div class="container">
           <h1>Welcome to <span>SubtitleRush</span></h1>
           <h2>Auto-Generate subtitles and burn them to your video, fast, free, no Email required</h2>
@@ -25,15 +23,12 @@
             <p>Adding subtitles to your video...</p>
           </div>
           <form action="./subtitle" method="POST" enctype="multipart/form-data" data-status="form" id="form">
-            <input id="session" name="token" type="hidden">
             <div class="input-boxes-container">
               <label for="inputVideo" class="drop-area" id="videoDropArea">
                 <input id="inputVideo" name="video" type="file" accept="video/*" required hidden/>
                 <div class="imgView">
                   <img id="preUploadedImg" src="../public/video-pre-upload.png" alt="Upload">
-                  <video id="uploadedImg" class="video-upload-thumbnail">
-                    Your browser does not support the video tag.
-                  </video>
+                  <video id="uploadedImg" class="video-upload-thumbnail">Your browser does not support the video tag.</video>
                   <p class="input-text" id="inputText">Drop file or click to select file</p>
                 </div>
               </label>
@@ -42,18 +37,7 @@
           </form>
         </div>
         <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="../public/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
-    
-       <!-- Compiled and minified JavaScript -->
-        <script
-          src="https://code.jquery.com/jquery-3.6.3.min.js"
-          integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
-          crossorigin="anonymous"
-        ></script>
-        <script src="./public/token.js"></script>
-        <script>
-          session.value = getCookie("token");
-    
-    
+        <script>    
           // drop uploading 
           let dropArea = document.querySelector('.drop-area')
           let imgView = document.querySelector('.imgView')
@@ -71,25 +55,20 @@
             return dropArea.classList.contains('droped')
           }
     
-        inputVideo.addEventListener('change', (event) => {
-            if (event.target.files.length > 0) {
-                fileAdded(event.target.files[0])
-            }
-        })
+          inputVideo.addEventListener('change', (event) => {
+            if (event.target.files.length) fileAdded(event.target.files[0])
+          })
     
           function fileAdded(file) {
-            let blobURL = URL.createObjectURL(file);    
-            uploadedImg.src = blobURL
-            uploadedImg.classList.add('show')
-            preUploadedImg.classList.add('hide')
-            inputText.classList.add('video-selected')
-            inputText.textContent = inputVideo.files[0].name
-            dropArea.classList.add('droped')
-            if (isFileAdded()) {
-              submitBtn.classList.add('working')
-            } else {
-              submitBtn.classList.remove('working')
-            }
+            let blobURL = URL.createObjectURL(file);
+            uploadedImg.src = blobURL;
+            uploadedImg.classList.add('show');
+            preUploadedImg.classList.add('hide');
+            inputText.classList.add('video-selected');
+            inputText.textContent = inputVideo.files[0].name;
+            dropArea.classList.add('droped');
+            if (isFileAdded()) submitBtn.classList.add('working');
+            else submitBtn.classList.remove('working');
           }
     
     
@@ -98,22 +77,18 @@
             dropArea.classList.add('drag-over')
           })
     
-          dropArea.addEventListener('dragleave', e => {
-            dropArea.classList.remove('drag-over')
-          })
+          dropArea.addEventListener('dragleave', e => dropArea.classList.remove('drag-over'))
     
           dropArea.addEventListener('drop', e => {
             e.preventDefault()
-            if (e.dataTransfer.files[0].type.startsWith('video/mp4')) {
-              inputVideo.files = e.dataTransfer.files
-            } else {
+            if (e.dataTransfer.files[0].type.startsWith('video/mp4')) inputVideo.files = e.dataTransfer.files
+            else {
               dropArea.classList.remove('drag-over')
               alert('Video must be mp4 format')
               return
             }
             fileAdded(e.dataTransfer.files[0])
           })
-    
         </script>
-      </body>
+    </body>
 </html>

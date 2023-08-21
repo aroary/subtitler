@@ -13,16 +13,8 @@
     <div class="download-container">
       <h1>Hurray!</h1>
       <h2>Your video is ready</h2>
-      <img src="../public/download-image.svg" alt="Video">
+      <video width="320" height="240" controls><source src="{{dataUrlPlaceholder}}" type="video/mp4"></video> 
       <a class="download-btn" class="white-text" download href="{{dataUrlPlaceholder}}"> Download</a>
     </div>
-
-    <!-- Compiled and minified JavaScript -->
-    <script
-      src="https://code.jquery.com/jquery-3.6.3.min.js"
-      integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
-      crossorigin="anonymous"
-    ></script>
-    <script src="./public/token.js"></script>
   </body>
 </html>
