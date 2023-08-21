@@ -30,7 +30,6 @@ const upload = multer({
 const app = express();
 
 app.use('/', express.static(path.join(__dirname, './view')));
-// app.use(express.raw({ type: "video/mp4" }));
 
 app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res) => {
     try {
@@ -44,7 +43,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
             .output('-')
             .outputOptions('-f null')
             .on('error', error => {
-                res.status(400).send();
+                res.status(400).type('text/plain').send("File is unsupported or corrupt");
                 console.error(error.message);
             })
             .on("end", () => {
@@ -66,7 +65,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                             .videoFilters(`subtitles=${"./test.srt"}`)
                             .output("./tested.mp4")
                             .on('error', error => {
-                                res.status(500).send();
+                                res.status(500).type('text/plain').send("Failed to generate video file");
                                 console.error(error.message);
                             })
                             .on('end', () => {
@@ -77,7 +76,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                             .run();
                     })
                     .catch(error => {
-                        res.status(500).send();
+                        res.status(500).type('text/plain').send("Failed to generate transcription file");
                         console.error(error.message);
                     });
             })
