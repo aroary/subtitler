@@ -14,8 +14,10 @@
     <div class="download-container">
       <h1>Hurray!</h1>
       <h2>Your video is ready, check it out.</h2>
-      <video controls><source src="{{dataUrlPlaceholder}}" type="video/mp4"></video> 
-      <a class="download-btn" class="white-text" download href="{{dataUrlPlaceholder}}"> Download</a>
+      <video controls><source src="{{videoDataUrl}}" type="video/mp4"></video> 
+      <a class="download-btn white-text" download href="{{videoDataUrl}}">Download Video</a>
+      <a class="download-btn white-text" download href="{{transcriptionDataUrl}}">Download Transcription</a>
+      <a class="download-btn white-text" href="/">Home</a>
     </div>
     <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="../public/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
   </body>

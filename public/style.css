@@ -333,6 +333,11 @@ footer {
     text-decoration: none;
 }
 
+.download-btn {
+    text-align: center;
+    width: 500px;
+}
+
 .download-btn:hover {
     box-shadow: 0 0 0 0;
 }
