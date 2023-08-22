@@ -75,6 +75,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                                 res.send(fs
                                     .readFileSync(path.join(__dirname, './view/complete.html'), { encoding: "utf8" })
                                     .replace(/{{dataUrlPlaceholder}}/g, "data:video/mp4;base64," + fs.readFileSync(path.join('./tested.mp4')).toString('base64')));
+                                // fs.unlink(path.join('./tested.mp4'))
                             })
                             .run();
                     })
