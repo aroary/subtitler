@@ -4,7 +4,7 @@
   "description": "Automatically add subtitles to your vidios using AI speech to text",
   "main": "index.js",
   "scripts": {
-    "test": "node -r dotenv/config index.js",
+    "test": "node -r dotenv/config index.js DEV",
     "start": "node -r dotenv/config index.js"
   },
   "author": "Shalomkohn, aroary",
