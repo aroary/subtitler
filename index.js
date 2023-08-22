@@ -74,7 +74,8 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                                 console.log("Sending generated file");
                                 res.send(fs
                                     .readFileSync(path.join(__dirname, './view/complete.html'), { encoding: "utf8" })
-                                    .replace(/{{dataUrlPlaceholder}}/g, "data:video/mp4;base64," + fs.readFileSync(path.join('./tested.mp4')).toString('base64')));
+                                    .replace(/{{videoDataUrl}}/g, "data:video/mp4;base64," + fs.readFileSync(path.join('./tested.mp4')).toString('base64'))
+                                    .replace(/{{transcriptionDataUrl}}/g, "data:application/x-subrip;base64," + fs.readFileSync(path.join('./test.srt')).toString('base64')));
                             })
                             .run();
                     })
@@ -90,4 +91,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
     }
 });
 
-if (!process.argv.includes("DEV")) app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));
+app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));
+
+// Exit test so that actions dont hang
+if (process.argv.includes("DEV")) setTimeout(process.exit(0), 5000);
