@@ -90,4 +90,4 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
     }
 });
 
-app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));
+if (!process.argv.includes("DEV")) app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));

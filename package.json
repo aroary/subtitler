@@ -4,13 +4,13 @@
   "description": "Automatically add subtitles to your vidios using AI speech to text",
   "main": "index.js",
   "scripts": {
-    "test": "node -r dotenv/config index.js",
+    "test": "node -r dotenv/config index.js DEV",
     "start": "node -r dotenv/config index.js"
   },
   "author": "Shalomkohn, aroary",
   "license": "ISC",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
