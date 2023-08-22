@@ -29,6 +29,7 @@ const upload = multer({
 
 const app = express();
 
+app.use("/public", express.static(path.join(__dirname, './public')));
 app.use('/', express.static(path.join(__dirname, './view')));
 
 app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res) => {
@@ -65,25 +66,27 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                             .videoFilters(`subtitles=${"./test.srt"}`)
                             .output("./tested.mp4")
                             .on('error', error => {
-                                res.status(500).type('text/plain').send("Failed to generate video file");
+                                res.status(500).type('text/html').sendFile(path.join(__dirname, './view/error-500.html'));
                                 console.error(error.message);
                             })
                             .on('end', () => {
                                 // Send results
                                 console.log("Sending generated file");
-                                res.setHeader("Content-Disposition", "attachment;filename=test.mp4").status(200).send(fs.readFileSync("./tested.mp4"));
+                                res.send(fs
+                                    .readFileSync(path.join(__dirname, './view/complete.html'), { encoding: "utf8" })
+                                    .replace(/{{dataUrlPlaceholder}}/g, "data:video/mp4;base64," + fs.readFileSync(path.join('./tested.mp4')).toString('base64')));
                             })
                             .run();
                     })
                     .catch(error => {
-                        res.status(500).type('text/plain').send("Failed to generate transcription file");
+                        res.status(500).type('text/html').sendFile(path.join(__dirname, './view/error-500.html'));
                         console.error(error.message);
                     });
             })
             .run();
     } catch (error) {
         console.error(error.message);
-        res.status(500).send();
+        res.status(500).type('text/html').sendFile(path.join(__dirname, './view/error-500.html'));
     }
 });
 
