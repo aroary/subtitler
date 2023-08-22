@@ -20,6 +20,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '18.x'
+      - name: create .env file
+        run: |
+          touch .env
+          echo OPENAI_API_KEY =${{ secrets.OPENAI_API_KEY }} >> .env
+          echo PORT =${{ vars.PORT }} >> .env
 
       - name: npm install, build, and test
         run: |
