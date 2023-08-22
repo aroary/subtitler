@@ -66,7 +66,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                             .videoFilters(`subtitles=${"./test.srt"}`)
                             .output("./tested.mp4")
                             .on('error', error => {
-                                res.status(500).type('text/plain').send("Failed to generate video file");
+                                res.status(500).type('text/html').sendFile(path.join(__dirname, './view/error-500.html'));
                                 console.error(error.message);
                             })
                             .on('end', () => {
@@ -79,14 +79,14 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                             .run();
                     })
                     .catch(error => {
-                        res.status(500).type('text/plain').send("Failed to generate transcription file");
+                        res.status(500).type('text/html').sendFile(path.join(__dirname, './view/error-500.html'));
                         console.error(error.message);
                     });
             })
             .run();
     } catch (error) {
         console.error(error.message);
-        res.status(500).send();
+        res.status(500).type('text/html').sendFile(path.join(__dirname, './view/error-500.html'));
     }
 });
 

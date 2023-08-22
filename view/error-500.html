@@ -1,22 +1,17 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="stylesheet" href="../public/style.css">
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <title>SubtitleRush - Auto-Generate Subtitles for Videos</title>
-  </head>
-  <body>
+</head>
+<body>
     <header><span class="logo">SubtitleRush</span></header>
-    <div class="download-container">
-      <h1>Hurray!</h1>
-      <h2>Your video is ready, check it out.</h2>
-      <video controls><source src="{{dataUrlPlaceholder}}" type="video/mp4"></video> 
-      <a class="download-btn" class="white-text" download href="{{dataUrlPlaceholder}}"> Download</a>
-    </div>
+    <div class="error" id="error">Uh Oh<br>It seems like we had an error processing your video <br><a href="/">Go back to home</a></div>
     <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="../public/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
-  </body>
+</body>
 </html>

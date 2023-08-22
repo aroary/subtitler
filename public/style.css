@@ -21,13 +21,19 @@ h1 {
     margin-top: 100px;
 }
 
-h1 span {
+.logo {
     color: #6831FF;
-    font-size: 42px;
+    padding-top: 20px;
+    font-size: 32px;
+    display: inline-block;
     font-style: normal;
-    font-weight: 500;
+    font-weight: bold;
     line-height: normal;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+h1 .logo {
+    font-size: 42px;
 }
 
 h2 {
@@ -220,7 +226,7 @@ form[data-status="loading"] {
     transition: .25s;
     cursor: pointer;
     background-size: 650px 650px;
-    animation: TransitioningBackground 2.2s ease infinite;
+    animation: TransitioningBackground 3s ease infinite;
     background-image: linear-gradient(to left, #6831FF, #401e6a);
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.4), 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -298,8 +304,12 @@ footer {
     flex-direction: column;
 }
 
-.download-container img {
+.download-container video {
     margin-top: 120px;
+    border-radius: 10px;
+    width: 500px;
+    max-width: 100%;
+    height: auto;
 }
 
 .download-container .download-btn {
@@ -309,7 +319,7 @@ footer {
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-    margin-top: 130px;
+    margin-top: 65px;
     position: relative;
     overflow: hidden;
     border: none;
@@ -317,7 +327,7 @@ footer {
     cursor: pointer;
     background-size: 650px 650px;
     animation: TransitioningBackground 3s ease infinite;
-    background-image: linear-gradient(to left, #6831FF, rgba(104, 49, 255, 0.40));
+    background-image: linear-gradient(to left, #6831FF, #401e6a);
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2), 2px 2px 4px rgba(0, 0, 0, 0.2);
     color: #efefef;
     text-decoration: none;
