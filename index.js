@@ -38,10 +38,11 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
     console.log("Saving uploaded file");
 
     try {
+        // Error check
+        console.log("Checking for errors");
         errorCheck("./test.mp4").then(() => {
             // Generate srt subtitles.
             console.log("Generating transcription");
-
             transcribe(openai, "./test.mp4").then(transcription => {
                 // Save srt file with transcription.
                 console.log("Saving transcription");
@@ -49,29 +50,55 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 
                 // Add subtitles from srt to video.
                 console.log("Generating file");
-
                 burn("./test.mp4", "./test.srt", "./tested.mp4").then(() => {
                     // Send results
                     console.log("Sending generated file");
-                    res.send(fs
+                    if (req.accepts("text/html")) res.send(fs
                         .readFileSync(path.join(__dirname, './public/complete.html'), { encoding: "utf8" })
                         .replace(/{{videoDataUrl}}/g, "data:video/mp4;base64," + fs.readFileSync(path.join('./tested.mp4')).toString('base64'))
                         .replace(/{{transcriptionDataUrl}}/g, "data:application/x-subrip;base64," + fs.readFileSync(path.join('./test.srt')).toString('base64')));
+                    else {
+                        res.charset = "base46";
+                        res.type("mp4").send(fs.readFileSync(path.join('./test.mp4')).toString('base64'));
+                    };
+
+                    // Clean up
+                    console.log("Cleaning files");
+                    fs.unlinkSync("./test.mp4");
+                    fs.unlinkSync("./tested.mp4");
+                    fs.unlinkSync("./test.srt");
                 }).catch(error => {
                     res.status(500).sendFile(path.join(__dirname, './public/error-500.html'));
                     console.error(error.message);
+
+                    // Clean up
+                    console.log("Cleaning files");
+                    fs.unlink("./test.mp4", console.error);
+                    fs.unlink("./test.srt", console.error);
                 });
             }).catch(error => {
                 res.status(500).type('text/html').sendFile(path.join(__dirname, './public/error-500.html'));
                 console.error(error.message);
+
+                // Clean up
+                console.log("Cleaning files");
+                fs.unlink("./test.mp4", console.error);
             });
         }).catch(error => {
             res.status(400).send("File is unsupported or corrupt");
             console.error(error.message);
+
+            // Clean up
+            console.log("Cleaning files");
+            fs.unlink("./test.mp4", console.error);
         });
     } catch (error) {
         console.error(error.message);
         res.status(500).type('text/html').sendFile(path.join(__dirname, './public/error-500.html'));
+
+        // Clean up
+        console.log("Cleaning files");
+        fs.unlink("./test.mp4");
     }
 });
 
@@ -79,6 +106,3 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 app.get("*", (req, res) => res.redirect("/"));
 
 app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));
-
-// Exit test so that actions dont hang.
-if (process.argv.includes("DEV")) setTimeout(process.exit(0), 5000);
