@@ -29,8 +29,9 @@ const upload = multer({
 
 const app = express();
 
-app.use("/public", express.static(path.join(__dirname, './public')));
-app.use('/', express.static(path.join(__dirname, './view')));
+app.use("/", express.static(path.join(__dirname, './public')));
+
+app.get(["/", "/home"], (req, res) => res.sendFile(path.join(__dirname, "./public/index.html")));
 
 app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res) => {
     // Save the video data to a file.
@@ -53,15 +54,15 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                     // Send results
                     console.log("Sending generated file");
                     res.send(fs
-                        .readFileSync(path.join(__dirname, './view/complete.html'), { encoding: "utf8" })
+                        .readFileSync(path.join(__dirname, './public/complete.html'), { encoding: "utf8" })
                         .replace(/{{videoDataUrl}}/g, "data:video/mp4;base64," + fs.readFileSync(path.join('./tested.mp4')).toString('base64'))
                         .replace(/{{transcriptionDataUrl}}/g, "data:application/x-subrip;base64," + fs.readFileSync(path.join('./test.srt')).toString('base64')));
                 }).catch(error => {
-                    res.status(500).sendFile(path.join(__dirname, './view/error-500.html'));
+                    res.status(500).sendFile(path.join(__dirname, './public/error-500.html'));
                     console.error(error.message);
                 });
             }).catch(error => {
-                res.status(500).type('text/html').sendFile(path.join(__dirname, './view/error-500.html'));
+                res.status(500).type('text/html').sendFile(path.join(__dirname, './public/error-500.html'));
                 console.error(error.message);
             });
         }).catch(error => {
@@ -70,9 +71,12 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
         });
     } catch (error) {
         console.error(error.message);
-        res.status(500).type('text/html').sendFile(path.join(__dirname, './view/error-500.html'));
+        res.status(500).type('text/html').sendFile(path.join(__dirname, './public/error-500.html'));
     }
 });
+
+// 404
+app.get("*", (req, res) => res.redirect("/"));
 
 app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="../public/style.css">
+        <link rel="stylesheet" href="./style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
           <h1>Welcome to <span class="logo">SubtitleRush</span></h1>
           <h2>Auto-Generate subtitles and burn them to your video, fast, free, no Email required</h2>
           <div class="loading-container" data-status="form" id="loadingContainer">
-            <img class="spinner" src="../public/spinner.svg" alt="Loading...">
+            <img class="spinner" src="./media/spinner.svg" alt="Loading...">
             <p>Processing your video...</p>
           </div>
           <form action="./subtitle" method="POST" enctype="multipart/form-data" data-status="form" id="form">
@@ -27,7 +27,7 @@
               <label for="inputVideo" class="drop-area" id="videoDropArea">
                 <input id="inputVideo" name="video" type="file" accept="video/*" required hidden/>
                 <div class="imgView">
-                  <img id="preUploadedImg" src="../public/video-pre-upload.png" alt="Upload">
+                  <img id="preUploadedImg" src="./media/video-pre-upload.png" alt="Upload">
                   <video id="uploadedImg" class="video-upload-thumbnail">Your browser does not support the video tag.</video>
                   <p class="input-text" id="inputText">Drop file or click to select file</p>
                 </div>
@@ -36,7 +36,7 @@
             <button type="submit" class="submit-btn" id="submitBtn">Add Subtitles</button>
           </form>
         </div>
-        <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="../public/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
+        <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
         <script>    
           // drop uploading 
           let dropArea = document.querySelector('.drop-area')
