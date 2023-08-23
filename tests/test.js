@@ -34,17 +34,13 @@ new Promise((resolve, reject) => {
 })
     .then(result => {
         console.log("Downloading file");
-        fs.writeFileSync(path.join(__dirname, "./tested.mp4"), result, { encoding: "base64" });
+        fs.writeFileSync(path.join(__dirname, "./sample.mp4"), result, { encoding: "base64" });
 
         // Error check
         console.log("Checking for errors");
-        errorCheck("./tested.mp4")
+        errorCheck("./sample.mp4")
             .then(() => console.log("Valid video file"))
             .catch(console.error);
-
-        // Clean up
-        console.log("Cleaning files");
-        fs.unlinkSync();
     })
     .catch(console.error)
     .finally(process.exit);
