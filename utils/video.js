@@ -21,7 +21,7 @@ function errorCheck(video) {
 /**
  * @description Burn the subtitles to the video.
  * @param {string} video - The video
- * @param {string} transcription - The subtitles,
+ * @param {string} transcription - The subtitles
  * @param {string} output - The output path
  * @returns {Promise} resolved is no errors, otherwise rejected
  */
