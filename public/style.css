@@ -368,3 +368,7 @@ footer {
 .home-btn:hover img {
     transform: translateX(-15px);
 }
+
+video {
+    border: 1px solid black;
+}
