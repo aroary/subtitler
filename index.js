@@ -6,7 +6,7 @@ const express = require("express");
 const multer = require('multer');
 
 const transcribe = require("./utils/transcribe");
-const { errorCheck, burn } = require("./utils/video");
+const { errorCheck, burn, stream } = require("./utils/video");
 
 // Add timestamp to console outputs.
 const _log = console.log, _error = console.error;
@@ -73,8 +73,8 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 
                     // Clean up
                     console.log("Cleaning files");
-                    fs.unlink("./test.mp4", console.error);
-                    fs.unlink("./test.srt", console.error);
+                    fs.unlink("./test.mp4", error => (error ? console.error : console.log)(error || "Deleted test.mp4"));
+                    fs.unlink("./test.srt", error => (error ? console.error : console.log)(error || "Deleted test.srt"));
                 });
             }).catch(error => {
                 res.status(500).type('text/html').sendFile(path.join(__dirname, './public/500.html'));
@@ -82,7 +82,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 
                 // Clean up
                 console.log("Cleaning files");
-                fs.unlink("./test.mp4", console.error);
+                fs.unlink("./test.mp4", error => (error ? console.error : console.log)(error || "Deleted test.mp4"));
             });
         }).catch(error => {
             res.status(400).type('text/html').sendFile(path.join(__dirname, './public/400.html'));
@@ -90,7 +90,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 
             // Clean up
             console.log("Cleaning files");
-            fs.unlink("./test.mp4", console.error);
+            fs.unlink("./test.mp4", error => (error ? console.error : console.log)(error || "Deleted test.mp4"));
         });
     } catch (error) {
         console.error(error.message);
@@ -98,7 +98,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 
         // Clean up
         console.log("Cleaning files");
-        fs.unlink("./test.mp4");
+        fs.unlink("./test.mp4", error => (error ? console.error : console.log)(error || "Deleted test.mp4"));
     }
 });
 
