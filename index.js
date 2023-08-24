@@ -68,7 +68,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                     fs.unlinkSync("./tested.mp4");
                     fs.unlinkSync("./test.srt");
                 }).catch(error => {
-                    res.status(500).sendFile(path.join(__dirname, './public/error-500.html'));
+                    res.status(500).sendFile(path.join(__dirname, './public/500.html'));
                     console.error(error.message);
 
                     // Clean up
@@ -77,7 +77,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                     fs.unlink("./test.srt", console.error);
                 });
             }).catch(error => {
-                res.status(500).type('text/html').sendFile(path.join(__dirname, './public/error-500.html'));
+                res.status(500).type('text/html').sendFile(path.join(__dirname, './public/500.html'));
                 console.error(error.message);
 
                 // Clean up
@@ -85,7 +85,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                 fs.unlink("./test.mp4", console.error);
             });
         }).catch(error => {
-            res.status(400).send("File is unsupported or corrupt");
+            res.status(400).type('text/html').sendFile(path.join(__dirname, './public/400.html'));
             console.error(error.message);
 
             // Clean up
@@ -94,7 +94,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
         });
     } catch (error) {
         console.error(error.message);
-        res.status(500).type('text/html').sendFile(path.join(__dirname, './public/error-500.html'));
+        res.status(500).type('text/html').sendFile(path.join(__dirname, './public/500.html'));
 
         // Clean up
         console.log("Cleaning files");
@@ -103,6 +103,6 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 });
 
 // 404
-app.get("*", (req, res) => res.redirect("/"));
+app.get("*", (req, res) => res.type('text/html').sendFile(path.join(__dirname, './public/404.html')));
 
 app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));
