@@ -42,25 +42,26 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
         console.log("Checking for errors");
         errorCheck("./test.mp4").then(() => {
             // Generate srt subtitles.
-            console.log("Generating transcription");
+            console.log("Generating subtitles");
             transcribe(openai, "./test.mp4").then(async transcription => {
                 // Save srt file with transcription.
-                console.log("Saving transcription");
+                console.log("Saving subtitles");
                 fs.writeFileSync("./test.srt", transcription);
 
                 try {
                     // Add subtitles from srt to video.
-                    console.log("Generating file");
-
+                    console.log("Burning subtitles");
                     await burn("./test.mp4", "./test.srt", "./tested.mp4");
 
+                    console.log("Updating results");
                     fs.unlinkSync("./test.mp4");
                     fs.renameSync("./tested.mp4", "./test.mp4");
 
+                    console.log("Embedding subtitles");
                     await embed("./test.mp4", "./test.srt", "./tested.mp4");
 
                     // Send results
-                    console.log("Sending generated file");
+                    console.log("Sending results");
                     if (req.accepts("text/html")) res.send(fs
                         .readFileSync(path.join(__dirname, './public/complete.html'), { encoding: "utf8" })
                         .replace(/{{videoDataUrl}}/g, "data:video/mp4;base64," + fs.readFileSync(path.join('./tested.mp4')).toString('base64'))
