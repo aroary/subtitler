@@ -6,7 +6,7 @@ const express = require("express");
 const multer = require('multer');
 
 const transcribe = require("./utils/transcribe");
-const { errorCheck, burn, stream } = require("./utils/video");
+const { errorCheck, burn, embed } = require("./utils/video");
 
 // Add timestamp to console outputs.
 const _log = console.log, _error = console.error;
@@ -43,14 +43,22 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
         errorCheck("./test.mp4").then(() => {
             // Generate srt subtitles.
             console.log("Generating transcription");
-            transcribe(openai, "./test.mp4").then(transcription => {
+            transcribe(openai, "./test.mp4").then(async transcription => {
                 // Save srt file with transcription.
                 console.log("Saving transcription");
                 fs.writeFileSync("./test.srt", transcription);
 
-                // Add subtitles from srt to video.
-                console.log("Generating file");
-                burn("./test.mp4", "./test.srt", "./tested.mp4").then(() => {
+                try {
+                    // Add subtitles from srt to video.
+                    console.log("Generating file");
+
+                    await burn("./test.mp4", "./test.srt", "./tested.mp4");
+
+                    fs.unlinkSync("./test.mp4");
+                    fs.renameSync("./tested.mp4", "./test.mp4");
+
+                    await embed("./test.mp4", "./test.srt", "./tested.mp4");
+
                     // Send results
                     console.log("Sending generated file");
                     if (req.accepts("text/html")) res.send(fs
@@ -61,21 +69,16 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                         res.charset = "base46";
                         res.type("mp4").send(fs.readFileSync(path.join('./test.mp4')).toString('base64'));
                     };
-
+                } catch (error) {
+                    res.status(500).sendFile(path.join(__dirname, './public/500.html'));
+                    console.error(error.message);
+                } finally {
                     // Clean up
                     console.log("Cleaning files");
                     fs.unlinkSync("./test.mp4");
                     fs.unlinkSync("./tested.mp4");
                     fs.unlinkSync("./test.srt");
-                }).catch(error => {
-                    res.status(500).sendFile(path.join(__dirname, './public/500.html'));
-                    console.error(error.message);
-
-                    // Clean up
-                    console.log("Cleaning files");
-                    fs.unlink("./test.mp4", error => (error ? console.error : console.log)(error || "Deleted test.mp4"));
-                    fs.unlink("./test.srt", error => (error ? console.error : console.log)(error || "Deleted test.srt"));
-                });
+                }
             }).catch(error => {
                 res.status(500).type('text/html').sendFile(path.join(__dirname, './public/500.html'));
                 console.error(error.message);

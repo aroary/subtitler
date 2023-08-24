@@ -50,16 +50,16 @@ function burn(video, transcription, output) {
 };
 
 /**
- * @description Add subtitles to video file in a subtitle stream.
+ * @description Embed the subtitles to subtitle stream.
  * @param {string} video - The video
  * @param {string} transcription - The subtitles
  * @param {string} output - The output path
  * @returns {Promise} resolved if no errors, otherwise rejected
  */
-function stream(video, transcription, output) {
+function embed(video, transcription, output) {
     return new Promise((resolve, reject) => fluent(video)
         .input(transcription)
-        .inputOptions([
+        .addOptions([
             "-c copy",
             "-c:s mov_text"
         ])
@@ -69,4 +69,4 @@ function stream(video, transcription, output) {
         .run());
 }
 
-module.exports = { errorCheck, convert, burn, stream };
+module.exports = { errorCheck, convert, burn, embed };
