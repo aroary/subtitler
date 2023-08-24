@@ -129,5 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Test files
-*test*
+# Sample files
+*sample*

@@ -1,17 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="../public/style.css">
+        <!-- favicon start -->
+        <link rel="icon" type="image/png" sizes="32x32" href="./media/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="./media/favicon-16x16.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="./media/apple-touch-icon.png">
+        <link rel="shortcut icon" href="./media/favicon.png">
+        <link rel="icon" href="./media/favicon.png">
+        <meta property="og:image" content="./media/favicon.png">
+        <meta name="twitter:image" content="./media/favicon.png">
+        <meta property="og:title" content="SubtitleRush - Auto-Generate Subtitles for Videos">
+        <meta property="og:description" content="Auto-generate subtitles and burn them to your video. Fast, free, no email required.">
+        <meta property="og:url" content="https://www.subtitlerush.com">
+        <meta property="og:site_name" content="SubtitleRush">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@SubtitleRush">
+        <meta name="twitter:title" content="SubtitleRush - Auto-Generate Subtitles for Videos">
+        <meta name="twitter:description" content="Auto-generate subtitles and burn them to your video. Fast, free, no email required.">
+        <meta name="twitter:url" content="https://www.subtitlerush.com">
+        <meta property="og:type" content="website">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <!-- favicon end -->
+        <link rel="stylesheet" href="./style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Auto-generate subtitles and burn them to your video. Fast, free, no email required. SubtitleRush lets you add subtitles to videos easily.">
-        <meta name="keywords" content="subtitles, video, automatic subtitles, burn subtitles, subtitle generator">
+        <meta name="keywords" content="subtitles, video, automatic subtitles, burn subtitles, subtitle generator, mp4">
         <meta name="author" content="Kuma Web Creations">
         <meta name="robots" content="index, follow">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
         <title>SubtitleRush - Auto-Generate Subtitles for Videos</title>
     </head>
     <body>
@@ -19,15 +41,15 @@
           <h1>Welcome to <span class="logo">SubtitleRush</span></h1>
           <h2>Auto-Generate subtitles and burn them to your video, fast, free, no Email required</h2>
           <div class="loading-container" data-status="form" id="loadingContainer">
-            <img class="spinner" src="../public/spinner.svg" alt="Loading...">
+            <img class="spinner" src="./media/spinner.svg" alt="Loading...">
             <p>Processing your video...</p>
           </div>
-          <form action="./subtitle" method="POST" enctype="multipart/form-data" data-status="form" id="form">
+          <form id="form" action="./subtitle" method="POST" enctype="multipart/form-data" data-status="form" accept="text/html">
             <div class="input-boxes-container">
               <label for="inputVideo" class="drop-area" id="videoDropArea">
-                <input id="inputVideo" name="video" type="file" accept="video/*" required hidden/>
+                <input id="inputVideo" name="video" type="file" accept="video/mp4" required hidden/>
                 <div class="imgView">
-                  <img id="preUploadedImg" src="../public/video-pre-upload.png" alt="Upload">
+                  <img id="preUploadedImg" src="./media/video-pre-upload.png" alt="Upload">
                   <video id="uploadedImg" class="video-upload-thumbnail">Your browser does not support the video tag.</video>
                   <p class="input-text" id="inputText">Drop file or click to select file</p>
                 </div>
@@ -36,7 +58,7 @@
             <button type="submit" class="submit-btn" id="submitBtn">Add Subtitles</button>
           </form>
         </div>
-        <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="../public/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
+        <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
         <script>    
           // drop uploading 
           let dropArea = document.querySelector('.drop-area')

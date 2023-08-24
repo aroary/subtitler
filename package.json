@@ -4,7 +4,7 @@
   "description": "Automatically add subtitles to your vidios using AI speech to text",
   "main": "index.js",
   "scripts": {
-    "test": "node -r dotenv/config index.js DEV",
+    "test": "node -r dotenv/config tests/test.js",
     "start": "node -r dotenv/config index.js"
   },
   "author": "Shalomkohn, aroary",
@@ -18,6 +18,7 @@
     "express": "^4.18.2",
     "ffmpeg": "^0.0.4",
     "fluent-ffmpeg": "^2.1.2",
+    "form-data": "^4.0.0",
     "moment": "^2.29.4",
     "multer": "^1.4.5-lts.1",
     "openai": "^4.0.1"
