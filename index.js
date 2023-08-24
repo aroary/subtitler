@@ -109,4 +109,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 // 404
 app.get("*", (req, res) => res.type('text/html').sendFile(path.join(__dirname, './public/404.html')));
 
-app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));
+app.listen(Number(process.env.PORT), () => {
+    console.log(`http://localhost:${process.env.PORT}/`);
+    if (process.env.WEBSITE_HOSTNAME) console.log(`https://${WEBSITE_HOSTNAME}/`);
+});
