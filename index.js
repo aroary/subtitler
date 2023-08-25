@@ -4,6 +4,7 @@ const openAI = require("openai");
 const moment = require("moment");
 const express = require("express");
 const multer = require('multer');
+const HandleBars = require("handlebars");
 
 const transcribe = require("./utils/transcribe");
 const { errorCheck, burn, embed } = require("./utils/video");
@@ -26,6 +27,9 @@ const upload = multer({
         filename: (req, file, cb) => cb(null, "test.mp4")
     })
 });
+
+// Results pages
+const resultPage = HandleBars.compile(fs.readFileSync(path.join(__dirname, './public/results.hbs'), { encoding: "utf8" }))
 
 const app = express();
 
@@ -62,13 +66,17 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 
                     // Send results
                     console.log("Sending results");
-                    if (req.accepts("text/html")) res.send(fs
-                        .readFileSync(path.join(__dirname, './public/complete.html'), { encoding: "utf8" })
-                        .replace(/{{videoDataUrl}}/g, "data:video/mp4;base64," + fs.readFileSync(path.join('./tested.mp4')).toString('base64'))
-                        .replace(/{{transcriptionDataUrl}}/g, "data:application/x-subrip;base64," + fs.readFileSync(path.join('./test.srt')).toString('base64')));
+                    const results = {
+                        "videoData": fs.readFileSync(path.join('./tested.mp4')).toString('base64'),
+                        "transcript": fs.readFileSync(path.join('./test.srt')).toString('base64'),
+                        "videoFile": "test.mp4",
+                        "transcriptFile": "test.srt"
+                    };
+
+                    if (req.accepts("text/html")) res.send(resultPage(results));
                     else {
                         res.charset = "base46";
-                        res.type("mp4").send(fs.readFileSync(path.join('./test.mp4')).toString('base64'));
+                        res.type("mp4").send(results.videoData);
                     };
                 } catch (error) {
                     res.status(500).sendFile(path.join(__dirname, './public/500.html'));
@@ -109,4 +117,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 // 404
 app.get("*", (req, res) => res.type('text/html').sendFile(path.join(__dirname, './public/404.html')));
 
-app.listen(Number(process.env.PORT), () => console.log(`http://localhost:${process.env.PORT}/`));
+app.listen(Number(process.env.PORT), () => {
+    console.log(`http://localhost:${process.env.PORT}/`);
+    if (process.env.WEBSITE_HOSTNAME) console.log(`https://${WEBSITE_HOSTNAME}/`);
+});
