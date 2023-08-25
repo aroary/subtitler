@@ -66,12 +66,14 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
 
                     // Send results
                     console.log("Sending results");
-                    if (req.accepts("text/html")) res.send(resultPage({
+                    const results = {
                         "videoData": fs.readFileSync(path.join('./tested.mp4')).toString('base64'),
                         "transcript": fs.readFileSync(path.join('./test.srt')).toString('base64'),
                         "videoFile": "test.mp4",
                         "transcriptFile": "test.srt"
-                    }));
+                    };
+
+                    if (req.accepts("text/html")) res.send(resultPage(results));
                     else {
                         res.charset = "base46";
                         res.type("mp4").send(results.videoData);
