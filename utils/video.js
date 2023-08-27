@@ -25,9 +25,8 @@ function errorCheck(video) {
  * @returns {Promise} resolved if no errors, otherwise rejected
  */
 function convert(file, format) {
-    const name = file.split(".").reverse().slice(1).reverse().join(".");
     return new Promise((resolve, reject) => fluent(file)
-        .output(`${name}.${format}`)
+        .output(`${file.split(".").slice(0, -1).join(".")}.${format}`)
         .on('error', reject)
         .on("end", resolve)
         .run());
@@ -36,13 +35,14 @@ function convert(file, format) {
 /**
  * @description Burn the subtitles to the video stream.
  * @param {string} video - The video
- * @param {string} transcription - The subtitles
+ * @param {string} transcript - The subtitles
  * @param {string} output - The output path
  * @returns {Promise} resolved if no errors, otherwise rejected
  */
-function burn(video, transcription, output) {
+async function burn(video, transcript, output) {
+    await convert(transcript, "ass");
     return new Promise((resolve, reject) => fluent(video)
-        .videoFilters(`subtitles=${transcription}`)
+        .videoFilters(`subtitles=${transcript}`)
         .output(output)
         .on('error', reject)
         .on('end', resolve)

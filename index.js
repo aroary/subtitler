@@ -87,6 +87,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                     fs.unlinkSync("./test.mp4");
                     fs.unlinkSync("./tested.mp4");
                     fs.unlinkSync("./test.srt");
+                    fs.unlinkSync("./test.ass");
                 }
             }).catch(error => {
                 res.status(500).type('text/html').sendFile(path.join(__dirname, './public/500.html'));
