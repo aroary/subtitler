@@ -33,6 +33,7 @@ const resultPage = HandleBars.compile(fs.readFileSync(path.join(__dirname, './pu
 
 const app = express();
 
+app.use("/", (req, res, next) => next(console.log(req.method, req.path)));
 app.use("/", express.static(path.join(__dirname, './public')));
 
 app.get(["/", "/home"], (req, res) => res.sendFile(path.join(__dirname, "./public/index.html")));
