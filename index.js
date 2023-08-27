@@ -120,5 +120,5 @@ app.get("*", (req, res) => res.type('text/html').sendFile(path.join(__dirname, '
 
 app.listen(Number(process.env.PORT), () => {
     console.log(`http://localhost:${process.env.PORT}/`);
-    if (process.env.WEBSITE_HOSTNAME) console.log(`https://${WEBSITE_HOSTNAME}/`);
+    if (process.env.WEBSITE_HOSTNAME) console.log(`https://${process.env.WEBSITE_HOSTNAME}/`);
 });
