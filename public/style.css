@@ -90,8 +90,10 @@ form[data-status="loading"] {
     margin-top: 170px;
     display: flex;
     justify-content: center;
-    gap: 200px;
+    align-items: center;
+    flex-direction: column;
     position: relative;
+    gap: 20px;
 }
 
 .drop-area {
@@ -101,6 +103,7 @@ form[data-status="loading"] {
     border: 2px dashed #555;
     background: #FFF;
     cursor: pointer;
+    position: relative;
 }
 
 .drop-area.drag-over {
@@ -111,6 +114,7 @@ form[data-status="loading"] {
 .drop-area.droped {
     border: 1px solid #000;
     background: #222;
+    margin-bottom: 30px;
 }
 
 .imgView {
@@ -164,19 +168,6 @@ form[data-status="loading"] {
     display: block;
 }
 
-.drop-area#videoDropArea::before {
-    content: "";
-    width: 202px;
-    height: 1px;
-    background-color: #666;
-    position: absolute;
-    display: inline-block;
-    z-index: -1;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
 .video-upload-thumbnail {
     height: 100%;
     display: none;
@@ -186,6 +177,19 @@ form[data-status="loading"] {
 
 .video-upload-thumbnail.show {
     display: block;
+}
+
+.or-paste {
+    font-size: 16px;
+    color: #333;
+}
+
+.input-url {
+    width: 430px;
+    border: 1px solid #333;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 10px;
 }
 
 @keyframes TransitioningBackground {

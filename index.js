@@ -42,6 +42,8 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
     // Save the video data to a file.
     console.log("Saving uploaded file");
 
+    // Accessing input video url: req.body.videoUrl
+
     try {
         // Error check
         console.log("Checking for errors");

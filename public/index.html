@@ -41,20 +41,23 @@
           <h1>Welcome to <span class="logo">SubtitleRush</span></h1>
           <h2>Auto-Generate subtitles and burn them to your video, fast, free, no Email required</h2>
           <div class="loading-container" data-status="form" id="loadingContainer">
-            <img class="spinner" src="./media/spinner.svg" alt="Loading...">
+          <img class="spinner" src="./media/spinner.svg" alt="Loading...">
             <p>Processing your video...</p>
           </div>
           <form id="form" action="./subtitle" method="POST" enctype="multipart/form-data" data-status="form" accept="text/html">
             <div class="input-boxes-container">
               <label for="inputVideo" class="drop-area" id="videoDropArea">
-                <input id="inputVideo" name="video" type="file" accept="video/mp4" required hidden/>
+                <input id="inputVideo" name="video" type="file" accept="video/mp4" hidden/>
                 <div class="imgView">
                   <img id="preUploadedImg" src="./media/video-pre-upload.png" alt="Upload">
                   <video id="uploadedImg" class="video-upload-thumbnail">Your browser does not support the video tag.</video>
                   <p class="input-text" id="inputText">Drop file or click to select file</p>
                 </div>
               </label>
+              <p class="or-paste">Or</p>
+              <input type="url" class="input-url" id="inputUrl" name="videoUrl" placeholder="Paste a URL">
             </div>
+
             <button type="submit" class="submit-btn" id="submitBtn">Add Subtitles</button>
           </form>
         </div>
@@ -72,9 +75,24 @@
               element.dataset.status = 'loading'
             })
           })
-    
-          function isFileAdded() {
-            return dropArea.classList.contains('droped')
+
+          inputUrl.addEventListener('input', (e) => {
+            changeButtonStatus()
+            inputVideo.value = null
+            inputText.textContent = "Drop file or click to select file"
+            uploadedImg.src = null
+            uploadedImg.classList.remove('show');
+            preUploadedImg.classList.remove('hide');
+            inputText.classList.remove('video-selected');
+            dropArea.classList.remove('droped');
+          })
+
+          function changeButtonStatus() {
+            if (dropArea.classList.contains('droped') || inputUrl.value !== '') {
+              submitBtn.classList.add('working')
+            } else {
+              submitBtn.classList.remove('working');
+            }
           }
     
           inputVideo.addEventListener('change', (event) => {
@@ -89,8 +107,8 @@
             inputText.classList.add('video-selected');
             inputText.textContent = inputVideo.files[0].name;
             dropArea.classList.add('droped');
-            if (isFileAdded()) submitBtn.classList.add('working');
-            else submitBtn.classList.remove('working');
+            inputUrl.value = '';
+            changeButtonStatus()
           }
     
     
