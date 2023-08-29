@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <!-- favicon start -->
         <link rel="icon" type="image/png" sizes="32x32" href="./media/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="./media/favicon-16x16.png">
         <link rel="apple-touch-icon" sizes="180x180" href="./media/apple-touch-icon.png">
-        <link rel="shortcut icon" href="./media/favicon.png">
+        <link rel="shortcut icon" href="../media/favicon.png">
         <link rel="icon" href="./media/favicon.png">
         <meta property="og:image" content="./media/favicon.png">
         <meta name="twitter:image" content="./media/favicon.png">
@@ -22,7 +22,7 @@
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
         <!-- favicon end -->
-        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="/style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
@@ -33,35 +33,14 @@
         <meta name="author" content="Kuma Web Creations">
         <meta name="robots" content="index, follow">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script src="./home.js" defer></script>
-        
+      
+        <link rel="stylesheet" href="./style.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <title>SubtitleRush - Auto-Generate Subtitles for Videos</title>
+        <script>window.onload = () => document.querySelectorAll("code").forEach(e => e.style.display = "none");</script>
     </head>
-    <body>
-        <div class="container">
-          <h1>Welcome to <span class="logo">SubtitleRush</span></h1>
-          <h2>Auto-Generate subtitles and burn them to your video, fast, free, no Email required</h2>
-          <div class="loading-container" data-status="form" id="loadingContainer">
-          <img class="spinner" src="./media/spinner.svg" alt="Loading...">
-            <p>Processing your video...</p>
-          </div>
-          <form id="form" action="./subtitle" method="POST" enctype="multipart/form-data" data-status="form" accept="text/html">
-            <div class="input-boxes-container">
-              <label for="inputVideo" class="drop-area" id="videoDropArea">
-                <input id="inputVideo" name="video" type="file" accept="video/mp4" hidden/>
-                <div class="imgView">
-                  <img id="preUploadedImg" src="./media/video-pre-upload.png" alt="Upload">
-                  <video id="uploadedImg" class="video-upload-thumbnail">Your browser does not support the video tag.</video>
-                  <p class="input-text" id="inputText">Drop file paste link or click to select file</p>
-                  <div id="input-url-container">
-                    <input type="url" class="input-url" id="inputUrl" name="videoURL" placeholder="Paste a URL" autofocus>
-                  </div>
-                </div>
-              </label>
-            </div>
-            <button type="submit" class="submit-btn" id="submitBtn">Add Subtitles</button>
-          </form>
-        </div>
-        <footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>
-    </body>
 </html>
