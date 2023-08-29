@@ -4,7 +4,6 @@ const openAI = require("openai");
 const moment = require("moment");
 const express = require("express");
 const multer = require('multer');
-const HandleBars = require("handlebars");
 
 const transcribe = require("./utils/transcribe");
 const download = require("./utils/download");
@@ -33,9 +32,6 @@ const upload = multer({
     })
 });
 
-// Results pages
-const resultPage = HandleBars.compile(fs.readFileSync(path.join(__dirname, './public/results.hbs'), { encoding: "utf8" }))
-
 const app = express();
 
 app.use("/", (req, res, next) => next(console.log(req.method, req.path)));
@@ -44,33 +40,50 @@ app.use("/", express.static(path.join(__dirname, './public')));
 app.get(["/", "/home"], (req, res) => res.sendFile(path.join(__dirname, "./public/index.html")));
 
 app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res) => {
+    const chunk = {
+        log(...args) {
+            if (req.accepts("text/html")) res.write(`<code>${args.map(String).join(" ")}</code>`);
+            console.log(...args);
+        }, error(...args) {
+            if (req.accepts("text/html")) res.write(`<code>${args.map(String).join(" ")}</code>`);
+            console.error(...args);
+        }
+    };
+
+    if (req.accepts("text/html")) {
+        res.status(200);
+        res.write(fs.readFileSync(path.join(__dirname, "./public/results.html")));
+        res.write(`<header><span class="logo">SubtitleRush</span></header><div class="download-container"><h1>Hurray!</h1><h2>Your video is ready, check it out.</h2>`);
+    }
+
     // Download from url if provided
-    if (req.body.videoURL && !fs.existsSync("./test.mp4")) (() => download(req.body.videoURL).then(file => console.log("Downloaded", file)).catch(console.error))();
+    if (req.body.videoURL && !fs.existsSync("./test.mp4")) (() => download(req.body.videoURL).then(file => chunk.log("Downloaded", file)).catch(chunk.error))();
     if (fs.existsSync("./test.mp4")) try {
         // Error check
-        console.log("Checking for errors");
+        chunk.log("Checking for errors");
         errorCheck("./test.mp4").then(() => {
             // Generate srt subtitles.
-            console.log("Generating subtitles");
+            chunk.log("Generating subtitles");
             transcribe(openai, "./test.mp4").then(async transcription => {
                 // Save srt file with transcription.
-                console.log("Saving subtitles");
+                chunk.log("Saving subtitles");
                 fs.writeFileSync("./test.srt", transcription);
 
                 try {
                     // Add subtitles from srt to video.
-                    console.log("Burning subtitles");
+                    chunk.log("Burning subtitles");
                     await burn("./test.mp4", "./test.srt", "./tested.mp4");
 
-                    console.log("Updating results");
+                    chunk.log("Updating results");
                     fs.unlinkSync("./test.mp4");
                     fs.renameSync("./tested.mp4", "./test.mp4");
 
-                    console.log("Embedding subtitles");
+                    chunk.log("Embedding subtitles");
                     await embed("./test.mp4", "./test.srt", "./tested.mp4");
 
                     // Send results
-                    console.log("Sending results");
+                    chunk.log("Sending results");
+
                     const results = {
                         "videoData": fs.readFileSync(path.join('./tested.mp4')).toString('base64'),
                         "transcript": fs.readFileSync(path.join('./test.srt')).toString('base64'),
@@ -78,47 +91,65 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), (req, res
                         "transcriptFile": "test.srt"
                     };
 
-                    if (req.accepts("text/html")) res.send(resultPage(results));
-                    else {
+                    if (req.accepts("text/html")) {
+                        res.write(`<video controls><source src="data:video/mp4;base64,${results.videoData}" type="video/mp4"></video>`);
+                        res.write(`<a class="download-btn" download="${results.videoFile}" href="data:video/mp4;base64,${results.videoData}">Download Video</a>`);
+                        res.write(`<a class="download-btn download-transcript-btn" download="${results.transcriptFile}" href="data:application/x-subrip;base64,${results.transcript}">Download Transcription</a>`);
+                    } else {
                         res.charset = "base46";
-                        res.type("mp4").send(results.videoData);
-                    };
+                        res.status(200).type("mp4").send(results.videoData);
+                    }
                 } catch (error) {
-                    res.status(500).sendFile(path.join(__dirname, './public/500.html'));
-                    console.error(error.message);
+                    chunk.error(error.message);
                 } finally {
                     // Clean up
-                    console.log("Cleaning files");
+                    chunk.log("Cleaning files");
                     fs.unlinkSync("./test.mp4");
                     fs.unlinkSync("./tested.mp4");
                     fs.unlinkSync("./test.srt");
                     fs.unlinkSync("./test.ass");
+
+                    if (req.accepts("text/html")) {
+                        res.write(`</div><footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>`);
+                        res.end();
+                    };
                 }
             }).catch(error => {
-                res.status(500).type('text/html').sendFile(path.join(__dirname, './public/500.html'));
-                console.error(error.message);
+                chunk.error(error.message);
 
                 // Clean up
-                console.log("Cleaning files");
-                fs.unlink("./test.mp4", error => (error ? console.error : console.log)(error || "Deleted test.mp4"));
+                chunk.log("Cleaning files");
+                fs.unlink("./test.mp4", error => (error ? chunk.error : chunk.log)(error || "Deleted test.mp4"));
+
+                if (req.accepts("text/html")) {
+                    res.write(`</div><footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>`);
+                    res.end();
+                };
             });
         }).catch(error => {
-            res.status(400).type('text/html').sendFile(path.join(__dirname, './public/400.html'));
-            console.error(error.message);
+            chunk.error(error.message);
 
             // Clean up
-            console.log("Cleaning files");
-            fs.unlink("./test.mp4", error => (error ? console.error : console.log)(error || "Deleted test.mp4"));
+            chunk.log("Cleaning files");
+            fs.unlink("./test.mp4", error => (error ? chunk.error : chunk.log)(error || "Deleted test.mp4"));
+
+            if (req.accepts("text/html")) {
+                res.write(`</div><footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>`);
+                res.end();
+            };
         });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).type('text/html').sendFile(path.join(__dirname, './public/500.html'));
+        chunk.error(chunk.message);
 
         // Clean up
-        console.log("Cleaning files");
-        fs.unlink("./test.mp4", error => (error ? console.error : console.log)(error || "Deleted test.mp4"));
+        chunk.log("Cleaning files");
+        fs.unlink("./test.mp4", error => (error ? chunk.error : chunk.log)(error || "Deleted test.mp4"));
+
+        if (req.accepts("text/html")) {
+            res.write(`</div><footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>`);
+            res.end();
+        };
     }
-    else res.status(400).type('text/html').sendFile(path.join(__dirname, './public/400.html'));
 });
 
 // 404
