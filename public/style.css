@@ -126,7 +126,7 @@ form[data-status="loading"] {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 50px;
+    gap: 30px;
     flex-direction: column;
 }
 
@@ -169,10 +169,13 @@ form[data-status="loading"] {
 }
 
 .video-upload-thumbnail {
-    height: 100%;
+    /* height: 100%; */
     display: none;
     max-width: 100%;
     border-radius: 20px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
 }
 
 .video-upload-thumbnail.show {
@@ -184,9 +187,26 @@ form[data-status="loading"] {
     color: #333;
 }
 
+#input-url-container {
+    text-align: center;
+}
+
+#input-url-container input {
+    text-align: center;
+}
+
 .input-url {
-    width: 430px;
+    width: 100%;
     border: 1px solid #333;
+    background-color: rgba(255, 255, 255, .5);
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 10px;
+}
+
+#url-upload {
+    border: 1px solid #333;
+    background-color: rgba(255, 255, 255, .5);
     padding: 12px 20px;
     font-size: 18px;
     border-radius: 10px;
