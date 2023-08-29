@@ -107,8 +107,10 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
         }
     } catch (error) {
         chunk.error(error.message);
+        res.write(`<h1>Oh no!</h1><h2>Something went wrong.</h2>`);
     } finally {
         if (req.accepts("text/html")) {
+            res.write(`<a class="home-btn" href="/"><img src="./media/back.svg" alt="Back to home">Go back to home</a>`)
             res.write(`</div><footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>`);
             res.end();
         };
