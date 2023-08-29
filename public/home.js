@@ -17,7 +17,7 @@ form.addEventListener("submit", () => {
 inputUrl.addEventListener('input', (e) => {
     changeButtonStatus();
     inputVideo.value = null;
-    inputText.textContent = "Drop file or click to select file";
+    inputText.textContent = "Drop file paste link or click to select file";
     uploadedImg.src = null;
     uploadedImg.classList.remove('show');
     preUploadedImg.classList.remove('hide');
@@ -28,7 +28,7 @@ inputUrl.addEventListener('input', (e) => {
 });
 
 function changeButtonStatus() {
-    if (dropArea.classList.contains('droped') || inputUrl.value !== '') {
+    if (dropArea.classList.contains('droped') || /https?:\/?\/?.+/.test(inputUrl.value) || /data:\/?\/?video\/mp4;(base64),.+/.test(inputUrl.value)) {
         submitBtn.classList.add('working');
     } else {
         submitBtn.classList.remove('working');
