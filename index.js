@@ -42,10 +42,10 @@ app.get(["/", "/home"], (req, res) => res.sendFile(path.join(__dirname, "./publi
 app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (req, res) => {
     const chunk = {
         log(...args) {
-            if (req.accepts("text/html")) res.write(`<code>${args.map(String).join(" ")}</code>`);
+            if (req.accepts("text/html")) res.write(`<script>status(${JSON.stringify(args.map(String).join(" "))})</script>`);
             console.log(...args);
         }, error(...args) {
-            if (req.accepts("text/html")) res.write(`<code>${args.map(String).join(" ")}</code>`);
+            if (req.accepts("text/html")) res.write(`<script>status(${JSON.stringify(args.map(String).join(" "))})</script>`);
             console.error(...args);
         }
     };
@@ -53,7 +53,8 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
     if (req.accepts("text/html")) {
         res.status(200);
         res.write(fs.readFileSync(path.join(__dirname, "./public/results.html")));
-        res.write(`<header><span class="logo">SubtitleRush</span></header><div class="download-container">`);
+        res.write(`<header><span class="logo">SubtitleRush</span></header><div class="download-container"><code id="console"></code>`);
+        res.write(`<script src="./chunk.js"></script>`);
     }
 
     try {

@@ -1,0 +1,7 @@
+#console {
+    border: 1px solid grey;
+    background-color: black;
+    color: white;
+    width: 50%;
+    height: 200px;
+}
