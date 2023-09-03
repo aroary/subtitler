@@ -3,12 +3,11 @@
     background-color: rgba(0, 0, 0, .8);
     color: white;
     padding: 2px;
-    width: 250px;
+    width: 500px;
     height: 150px;
     position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    bottom: 0;
+    /* transform: translate(-50%, -50%); */
     z-index: 2;
 }
 
