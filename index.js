@@ -23,7 +23,7 @@ const openai = new openAI.OpenAI({
 
 // Save the video data to a file.
 const upload = multer({
-    storage: multer.diskStorage({
+    storage: process.argv.includes("--dry-run") ? null : multer.diskStorage({
         destination: (req, file, cb) => cb(null, './'),
         filename: (req, file, cb) => {
             console.log("Saving uploaded file");
@@ -59,7 +59,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
 
     try {
         // Download from url if provided
-        if (req.body.videoURL && !fs.existsSync("./test.mp4")) {
+        if (!process.argv.includes("--dry-run") && req.body.videoURL && !fs.existsSync("./test.mp4")) {
             const file = await download(req.body.videoURL);
             chunk.log("Downloaded", file);
         }
@@ -74,15 +74,17 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
 
         // Save srt file with transcription.
         chunk.log("Saving subtitles");
-        fs.writeFileSync("./test.srt", transcription);
+        if (!process.argv.includes("--dry-run")) fs.writeFileSync("./test.srt", transcription);
 
         // Add subtitles from srt to video.
         chunk.log("Burning subtitles");
         await burn("./test.mp4", "./test.srt", "./tested.mp4");
 
         chunk.log("Updating results");
-        fs.unlinkSync("./test.mp4");
-        fs.renameSync("./tested.mp4", "./test.mp4");
+        if (!process.argv.includes("--dry-run")) {
+            fs.unlinkSync("./test.mp4");
+            fs.renameSync("./tested.mp4", "./test.mp4");
+        };
 
         chunk.log("Embedding subtitles");
         await embed("./test.mp4", "./test.srt", "./tested.mp4");
@@ -91,10 +93,10 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
         chunk.log("Sending results");
 
         const results = {
-            videoData: fs.readFileSync(path.join('./tested.mp4')).toString('base64'),
-            transcript: fs.readFileSync(path.join('./test.srt')).toString('base64'),
-            videoFile: "test.mp4",
-            transcriptFile: "test.srt"
+            videoData: process.argv.includes("--dry-run") ? "" : fs.readFileSync(path.join('./tested.mp4')).toString('base64'),
+            transcript: process.argv.includes("--dry-run") ? "" : fs.readFileSync(path.join('./test.srt')).toString('base64'),
+            videoFile: process.argv.includes("--dry-run") ? "" : "test.mp4",
+            transcriptFile: process.argv.includes("--dry-run") ? "" : "test.srt"
         };
 
         if (req.accepts("text/html")) {
@@ -119,10 +121,12 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
 
         // Clean up
         console.log("Cleaning files");
-        fs.unlink("./test.mp4", error => !error && console.log("Deleted test.mp4"));
-        fs.unlink("./tested.mp4", error => !error && console.log("Deleted tested.mp4"));
-        fs.unlink("./test.srt", error => !error && console.log("Deleted test.srt"));
-        fs.unlink("./test.ass", error => !error && console.log("Deleted test.ass"));
+        if (!process.argv.includes("--dry-run")) {
+            fs.unlink("./test.mp4", error => !error && console.log("Deleted test.mp4"));
+            fs.unlink("./tested.mp4", error => !error && console.log("Deleted tested.mp4"));
+            fs.unlink("./test.srt", error => !error && console.log("Deleted test.srt"));
+            fs.unlink("./test.ass", error => !error && console.log("Deleted test.ass"));
+        }
     }
 });
 

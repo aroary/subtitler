@@ -8,7 +8,8 @@ fluent.setFfmpegPath(require('@ffmpeg-installer/ffmpeg').path);
  * @returns {Promise} resolved if no errors, otherwise rejected
  */
 function errorCheck(video) {
-    return new Promise((resolve, reject) => fluent(video)
+    if (process.argv.includes("--dry-run")) return new Promise(r => r());
+    else return new Promise((resolve, reject) => fluent(video)
         .addInputOption('-xerror')
         .addInputOption('-v error')
         .output('-')
@@ -25,7 +26,8 @@ function errorCheck(video) {
  * @returns {Promise} resolved if no errors, otherwise rejected
  */
 function convert(file, format) {
-    return new Promise((resolve, reject) => fluent(file)
+    if (process.argv.includes("--dry-run")) return new Promise(r => r());
+    else return new Promise((resolve, reject) => fluent(file)
         .output(`${file.split(".").slice(0, -1).join(".")}.${format}`)
         .on('error', reject)
         .on("end", resolve)
@@ -41,7 +43,8 @@ function convert(file, format) {
  */
 async function burn(video, transcript, output) {
     await convert(transcript, "ass");
-    return new Promise((resolve, reject) => fluent(video)
+    if (process.argv.includes("--dry-run")) return new Promise(r => r());
+    else return new Promise((resolve, reject) => fluent(video)
         .videoFilters(`subtitles=${transcript}`)
         .output(output)
         .on('error', reject)
@@ -57,7 +60,8 @@ async function burn(video, transcript, output) {
  * @returns {Promise} resolved if no errors, otherwise rejected
  */
 function embed(video, transcription, output) {
-    return new Promise((resolve, reject) => fluent(video)
+    if (process.argv.includes("--dry-run")) return new Promise(r => r());
+    else return new Promise((resolve, reject) => fluent(video)
         .input(transcription)
         .addOptions([
             "-c copy",

@@ -9,7 +9,8 @@ const path = require("path");
  * @returns {Promise<string,Error>} The write stream of the result
  */
 function download(url) {
-    return new Promise((resolve, reject) => {
+    if (process.argv.includes("--dry-run")) return new Promise(r => r(""));
+    else return new Promise((resolve, reject) => {
         if (url.startsWith("data:")) {
             const mime = /:\w+\/\w+/i.exec(url)[0].slice(1);
             const encoding = url.slice(url.indexOf(mime) + mime.length + 1, url.indexOf(","));
