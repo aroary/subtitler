@@ -3,10 +3,24 @@
     background-color: rgba(0, 0, 0, .8);
     color: white;
     padding: 2px;
-    width: 50%;
-    height: 200px;
-    position: absolute;
+    width: 250px;
+    height: 150px;
+    position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+#console>button {
+    background-color: transparent;
+    background-image: url("./media/close.png");
+    background-position: center;
+    border: 1px solid red;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }

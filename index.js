@@ -53,13 +53,13 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
     if (req.accepts("text/html")) {
         res.status(200);
         res.write(fs.readFileSync(path.join(__dirname, "./public/results.html")));
-        res.write(`<header><span class="logo">SubtitleRush</span></header><div class="download-container"><code id="console"></code>`);
+        res.write(`<header><span class="logo">SubtitleRush</span></header><div class="download-container"><code id="console"><button onclick="toggle()"></button></code>`);
         res.write(`<script src="./chunk.js"></script>`);
     }
 
     try {
         // Download from url if provided
-        if (!process.argv.includes("--dry-run") && req.body.videoURL && !fs.existsSync("./test.mp4")) {
+        if (req.body.videoURL && !fs.existsSync("./test.mp4")) {
             const file = await download(req.body.videoURL);
             chunk.log("Downloaded", file);
         }
@@ -113,7 +113,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
         res.write(`<h1>Oh no!</h1><h2>Something went wrong.</h2>`);
     } finally {
         if (req.accepts("text/html")) {
-            res.write(`<a class="home-btn" href="/"><img src="./media/back.svg" alt="Back to home">Go back to home</a>`)
+            res.write(`<a class="home-btn" href="/"><img src="./media/back.svg" alt="Back to home">Go back to home</a>`);
             res.write(`</div><footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>`);
         };
 

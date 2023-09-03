@@ -4,4 +4,8 @@ function status(message) {
     view.innerHTML += message + "<br>";
 }
 
-window.onload = () => view.style.display = "none";
+function toggle() {
+    view.style.display = ["none", "block"][~~(view.style.display === "none")];
+}
+
+// window.onload = () => view.style.display = "none";
