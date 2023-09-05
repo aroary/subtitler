@@ -23,7 +23,7 @@ const openai = new openAI.OpenAI({
 
 // Save the video data to a file.
 const upload = multer({
-    storage: multer.diskStorage({
+    storage: process.argv.includes("--dry-run") ? null : multer.diskStorage({
         destination: (req, file, cb) => cb(null, './'),
         filename: (req, file, cb) => {
             console.log("Saving uploaded file");
@@ -42,10 +42,10 @@ app.get(["/", "/home"], (req, res) => res.sendFile(path.join(__dirname, "./publi
 app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (req, res) => {
     const chunk = {
         log(...args) {
-            if (req.accepts("text/html")) res.write(`<code>${args.map(String).join(" ")}</code>`);
+            if (req.accepts("text/html")) res.write(`<script>status(${JSON.stringify(args.map(String).join(" "))})</script>`);
             console.log(...args);
         }, error(...args) {
-            if (req.accepts("text/html")) res.write(`<code>${args.map(String).join(" ")}</code>`);
+            if (req.accepts("text/html")) res.write(`<script>status(${JSON.stringify(args.map(String).join(" "))})</script>`);
             console.error(...args);
         }
     };
@@ -53,7 +53,8 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
     if (req.accepts("text/html")) {
         res.status(200);
         res.write(fs.readFileSync(path.join(__dirname, "./public/results.html")));
-        res.write(`<header><span class="logo">SubtitleRush</span></header><div class="download-container">`);
+        res.write(`<header><span class="logo">SubtitleRush</span></header><div class="download-container"><code id="console"><button onclick="toggle()"></button></code>`);
+        res.write(`<script src="./chunk.js"></script>`);
     }
 
     try {
@@ -73,15 +74,17 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
 
         // Save srt file with transcription.
         chunk.log("Saving subtitles");
-        fs.writeFileSync("./test.srt", transcription);
+        if (!process.argv.includes("--dry-run")) fs.writeFileSync("./test.srt", transcription);
 
         // Add subtitles from srt to video.
         chunk.log("Burning subtitles");
         await burn("./test.mp4", "./test.srt", "./tested.mp4");
 
         chunk.log("Updating results");
-        fs.unlinkSync("./test.mp4");
-        fs.renameSync("./tested.mp4", "./test.mp4");
+        if (!process.argv.includes("--dry-run")) {
+            fs.unlinkSync("./test.mp4");
+            fs.renameSync("./tested.mp4", "./test.mp4");
+        };
 
         chunk.log("Embedding subtitles");
         await embed("./test.mp4", "./test.srt", "./tested.mp4");
@@ -90,10 +93,10 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
         chunk.log("Sending results");
 
         const results = {
-            videoData: fs.readFileSync(path.join('./tested.mp4')).toString('base64'),
-            transcript: fs.readFileSync(path.join('./test.srt')).toString('base64'),
-            videoFile: "test.mp4",
-            transcriptFile: "test.srt"
+            videoData: process.argv.includes("--dry-run") ? "" : fs.readFileSync(path.join('./tested.mp4')).toString('base64'),
+            transcript: process.argv.includes("--dry-run") ? "" : fs.readFileSync(path.join('./test.srt')).toString('base64'),
+            videoFile: process.argv.includes("--dry-run") ? "" : "test.mp4",
+            transcriptFile: process.argv.includes("--dry-run") ? "" : "test.srt"
         };
 
         if (req.accepts("text/html")) {
@@ -110,7 +113,7 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
         res.write(`<h1>Oh no!</h1><h2>Something went wrong.</h2>`);
     } finally {
         if (req.accepts("text/html")) {
-            res.write(`<a class="home-btn" href="/"><img src="./media/back.svg" alt="Back to home">Go back to home</a>`)
+            res.write(`<a class="home-btn" href="/"><img src="./media/back.svg" alt="Back to home">Go back to home</a>`);
             res.write(`</div><footer><p>Copyright &copy; 2023 Kuma Web Creations</p><a href="https://wearekuma.com" target="_blank"><img src="./media/kuma-logo.png" alt="Kuma Web Creations"></a></footer>`);
         };
 
@@ -118,10 +121,12 @@ app.post("/subtitle", upload.fields([{ name: "video", maxCount: 1 }]), async (re
 
         // Clean up
         console.log("Cleaning files");
-        fs.unlink("./test.mp4", error => !error && console.log("Deleted test.mp4"));
-        fs.unlink("./tested.mp4", error => !error && console.log("Deleted tested.mp4"));
-        fs.unlink("./test.srt", error => !error && console.log("Deleted test.srt"));
-        fs.unlink("./test.ass", error => !error && console.log("Deleted test.ass"));
+        if (!process.argv.includes("--dry-run")) {
+            fs.unlink("./test.mp4", error => !error && console.log("Deleted test.mp4"));
+            fs.unlink("./tested.mp4", error => !error && console.log("Deleted tested.mp4"));
+            fs.unlink("./test.srt", error => !error && console.log("Deleted test.srt"));
+            fs.unlink("./test.ass", error => !error && console.log("Deleted test.ass"));
+        }
     }
 });
 

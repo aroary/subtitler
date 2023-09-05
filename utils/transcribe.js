@@ -9,7 +9,8 @@ const openAI = require("openai");
  * @returns {Promise} Video transcription.
  */
 function transcibe(openai, video, format = "srt") {
-    return openai.audio.transcriptions.create({
+    if (process.argv.includes("--dry-run")) return new Promise(r => r(""));
+    else return openai.audio.transcriptions.create({
         file: fs.createReadStream(video),
         response_format: "srt",
         model: 'whisper-1',
