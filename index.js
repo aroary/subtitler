@@ -19,12 +19,17 @@ const upload = multer({
     })
 }).single("video");
 
+// Cache files for performance
+const cache = new Map();
+cache.set("home", fs.readFileSync(path.join(__dirname, "./public/index.html")));
+cache.set("404", fs.readFileSync(path.join(__dirname, './public/404.html')));
+
 const app = express();
 
 app.use("/", (req, res, next) => next(console.log(req.method, req.path)));
 app.use("/", express.static(path.join(__dirname, './public')));
 
-app.get(["/", "/home"], (req, res) => res.sendFile(path.join(__dirname, "./public/index.html")));
+app.get(["/", "/home"], (req, res) => res.send(cache.get("home")));
 
 app.post("/subtitle", upload, async (req, res) => {
     const chunk = {
@@ -124,7 +129,7 @@ app.post("/subtitle", upload, async (req, res) => {
 });
 
 // 404
-app.get("*", (req, res) => res.type('text/html').sendFile(path.join(__dirname, './public/404.html')));
+app.get("*", (req, res) => res.type('text/html').send(cache.get("home")));
 
 app.listen(Number(process.env.PORT), () => {
     console.log(`http://localhost:${process.env.PORT}/`);
