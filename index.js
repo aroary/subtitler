@@ -53,7 +53,7 @@ app.post("/subtitle", upload, async (req, res) => {
 
     try {
         // Get file
-        file = req.file?.filename || await download(req.body.videoURL);
+        file = encodeURIComponent(req.file?.filename || await download(req.body.videoURL));
         name = file.split(".").slice(0, -1).join(".");
         type = file.split(".").pop();
 
