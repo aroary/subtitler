@@ -12,8 +12,8 @@ console.error = (...args) => _error(process.pid, moment().format("\\[MM:DD:YY HH
 // Initialize generated data directory
 if (!process.argv.includes("--dry-run")) {
     console.log("Initializing ./data/");
-    if (fs.existsSync(path.join(__dirname, "./data"))) fs.rmSync(path.join(__dirname, "./data"), { recursive: true, force: true });
-    fs.mkdirSync(path.join(__dirname, "./data"));
+    if (fs.existsSync(new URL("./data", import.meta.url))) fs.rmSync(new URL("./data", import.meta.url), { recursive: true, force: true });
+    fs.mkdirSync(new URL("./data", import.meta.url));
 };
 
 if (cluster.isPrimary) {
