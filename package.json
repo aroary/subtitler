@@ -4,8 +4,8 @@
   "description": "Automatically add subtitles to your vidios using AI speech to text",
   "main": "index.js",
   "scripts": {
-    "test": "node -r dotenv/config threading.mjs.js",
-    "start": "node -r dotenv/config index.js",
+    "test": "node -r dotenv/config tests/test.js",
+    "start": "node -r dotenv/config thredaing.mjs",
     "dry": "node -r dotenv/config threading.mjs --dry-run"
   },
   "author": "Shalomkohn, aroary",
