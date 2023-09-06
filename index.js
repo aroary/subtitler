@@ -124,7 +124,8 @@ app.post("/subtitle", upload, async (req, res) => {
 });
 
 // 404
-app.get("*", (req, res) => res.type('text/html').sendFile(path.join(__dirname, './public/404.html')));
+const error_404 = fs.readFileSync(path.join(__dirname, './public/404.html'));
+app.get("*", (req, res) => res.type('text/html').send(error_404));
 
 app.listen(Number(process.env.PORT), () => {
     console.log(`http://localhost:${process.env.PORT}/`);
